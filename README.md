@@ -14,10 +14,10 @@ Additional information can be found [at this blog post](https://blog.jamesbrooks
 CountLoader.for(model, field).load(value)
 ```
 
-### Similar to
+### Non-batched equivalent
 
 ```ruby
-model.where(field => values).group(field).count
+model.where(field => value).count
 ```
 
 ### Example
@@ -36,6 +36,44 @@ class Types::UserType < Types::BaseObject
 
   def post_count
     CountLoader.for(Post, :user_id).load(object.id)
+  end
+end
+```
+
+## [AssociationCountLoader](loaders/association_count_loader.rb)
+
+Batches counts on a model through a defined association.
+
+Additional information can be found [at this blog post](https://blog.jamesbrooks.net/graphql-batch-count-loader.html).
+
+### Invocation
+
+```ruby
+AssociationCountLoader.for(model, association).load(record)
+```
+
+### Non-batched equivalent
+
+```ruby
+model.association.count
+```
+
+### Example
+
+```ruby
+class User < ApplicationRecord
+  has_many :posts
+end
+
+class Post < ApplicationRecord
+  belongs_to :user
+end
+
+class Types::UserType < Types::BaseObject
+  field :post_count, Integer
+
+  def post_count
+    AssociationCountLoader.for(User, :posts).load(object)
   end
 end
 ```
