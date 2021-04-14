@@ -2,6 +2,11 @@
 
 This is a personal collection of [graphql-batch](https://github.com/Shopify/graphql-batch) loaders that I have either authored or modified to my requirements, they are provided as-is and might help someone looking for a specific niche loader.
 
+Loader | Purpose
+--- | ---
+[CountLoader](#countloader) | Batches counts on a model by values of a specific field.
+[AssociationCountLoader](#associationcountloader) | Batches counts on a model through a defined association.
+
 ## [CountLoader](loaders/count_loader.rb)
 
 Batches counts on a model by values of a specific field.
