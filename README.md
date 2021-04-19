@@ -66,6 +66,8 @@ model.association.count
 
 ### Example
 
+#### has_many
+
 ```ruby
 class User < ApplicationRecord
   has_many :posts
@@ -80,6 +82,53 @@ class Types::UserType < Types::BaseObject
 
   def post_count
     AssociationCountLoader.for(User, :posts).load(object)
+  end
+end
+```
+
+#### has_and_belongs_to_many
+
+```ruby
+class User < ApplicationRecord
+  has_and_belongs_to_many :posts, inverse_of: :users
+end
+
+class Post < ApplicationRecord
+  has_and_belongs_to_many :users
+end
+
+class Types::UserType < Types::BaseObject
+  field :post_count, Integer
+
+  def post_count
+    AssociationCountLoader.for(User, :posts).load(object)
+  end
+end
+```
+
+#### has_many :through
+
+```ruby
+class User < ApplicationRecord
+  has_many :posts
+  has_many :comments, through: :posts, inverse_of: :user
+end
+
+class Post < ApplicationRecord
+  belongs_to :user
+  has_many :comments
+end
+
+class Comment < ApplicationRecord
+  belongs_to :post
+  has_one :user, through: :post
+end
+
+class Types::UserType < Types::BaseObject
+  field :comment_count, Integer
+
+  def comment_count
+    AssociationCountLoader.for(User, :comments).load(object)
   end
 end
 ```
